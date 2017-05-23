@@ -22,6 +22,7 @@ public class Configuration {
     public String TarantoolUserName;
     public String TarantoolPassword;
     public String IgniteCfgPath;
+    public String DROPBASEAFTERTEST;
     Configuration(XMLConfiguration config){
         ACCOUNTNAMELENGTH = config.getInt("AddAccountTest.AccountIdLength");
         MAXACCOUNTCACHE = config.getInt("AddAccountTest.AccountMaxStartCache");
@@ -31,7 +32,7 @@ public class Configuration {
         FLOWNUMBER = config.getInt("FlowNumber");
         ASYNCREQUESTPERFLOW = config.getInt("AsyncRequestsPerFlow");
         STATISTICINTERVAL_ADDACCOUTTEST_InS = config.getInt("AddAccountTest.StatisticIntervalSec");
-        STATISTICINTERVAL_TRANSFERTEST_InS = config.getInt("TransferTest.AsyncRequestsPerFlow");
+        STATISTICINTERVAL_TRANSFERTEST_InS = config.getInt("TransferTest.StatisticIntervalSec");
         if (config.getString("RandomSeed")==null){
             rnd = new Random(System.nanoTime());
         }
@@ -50,6 +51,6 @@ public class Configuration {
                 ClientName = "Ignite";
                 IgniteCfgPath = config.getString("Client.CfgPath");
         }
-
+        DROPBASEAFTERTEST = config.getString("DropBaseAfterTest");
     }
 }

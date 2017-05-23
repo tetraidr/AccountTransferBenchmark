@@ -1,0 +1,25 @@
+<Configuration>
+	<Client type="Tarantool">
+		<HostName>10.36.8.68</HostName>
+		<Port>3301</Port>
+		<UserName>tester</UserName>
+		<Password>tester</Password>
+	</Client>
+	<!--<Client type="Ignite">
+		<CfgPath>D:\work\IdeaProjects\tarantoolbenchmark_i\config\ignitecl.xml</CfgPath>
+	</Client>-->
+	<FlowNumber>10</FlowNumber>
+	<AsyncRequestsPerFlow>150</AsyncRequestsPerFlow>
+	<RandomSeed>100</RandomSeed>
+	<AddAccountTest>
+		<AccountIdLength>8</AccountIdLength>
+		<AccountMaxStartCache>1000</AccountMaxStartCache>
+		<NumberOfAccounts>5000</NumberOfAccounts>
+		<StatisticIntervalSec>1</StatisticIntervalSec>
+	</AddAccountTest>
+	<TransferTest>
+		<MaxCacheForTransfer>500</MaxCacheForTransfer>
+		<NumberOfTransfers>100000</NumberOfTransfers>
+		<StatisticIntervalSec>10</StatisticIntervalSec>
+	</TransferTest>
+</Configuration>

@@ -25,8 +25,8 @@ public class IgniteCustomClient implements CustomClient {
     private static volatile CacheConfiguration<String, Integer> cfg;
     private static volatile IgniteCache<String, Integer> cache;
     private Random rnd = new Random(System.currentTimeMillis());
-    public IgniteCustomClient(){
-        ignite = Ignition.start("D:\\work\\IdeaProjects\\tarantoolbenchmark_i\\config\\ignitecl.xml");
+    public IgniteCustomClient(String CfgPath){
+        ignite = Ignition.start(CfgPath);
         cfg = new CacheConfiguration<>(CACHE_NAME);
         cfg.setAtomicityMode(CacheAtomicityMode.TRANSACTIONAL);
         cache = ignite.getOrCreateCache(cfg);

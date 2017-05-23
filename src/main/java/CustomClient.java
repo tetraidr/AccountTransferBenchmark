@@ -5,4 +5,5 @@ public interface CustomClient {
     int AcctTransfer(AcctTransfer transfer);
     int AddAccount(String AcctId, Integer sum);
     Long Checksum();
+    void drop();
 }

@@ -45,4 +45,8 @@ public class CustomTarantoolClient implements CustomClient{
         List Result = client.syncOps().call("Benchmark.checksum");
         return new Long(((List)Result.get(0)).get(0).toString());
     }
+    public void drop(){
+        client.syncOps().call("Benchmark.drop_space");
+        System.out.println("Remember to restart Tarantool nodes to rebuild space");
+    }
 }
