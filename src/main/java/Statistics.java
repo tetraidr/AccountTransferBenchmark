@@ -1,5 +1,8 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.Formatter;
 /**
  * Created by sbt-khruzin-mm on 17.05.2017.
  */
@@ -7,10 +10,12 @@ public class Statistics{
     private static ConcurrentHashMap<Integer,StatisticsElement> statistics;
     int CurrentStage;
     long CheckSum;
-    Statistics(long CheckSum){
+    FileWriter OutFile;
+    Statistics(long CheckSum, FileWriter OutFile){
         statistics = new ConcurrentHashMap<>();
         CurrentStage = 0;
         this.CheckSum = CheckSum;
+        this.OutFile = OutFile;
     }
     public void AddStatisticsElement(long TimeStamp,long Progress,long CheckSum){
         StatisticsElement NewElement = new StatisticsElement(TimeStamp,Progress,CheckSum);
@@ -55,6 +60,12 @@ public class Statistics{
     }
     public void PrintCurrentStatistics(){
         System.out.format("Last %f s. Current speed: %f act/s. Average speed: %f act/s.%n", GetIntervalInS(statistics.get(0),statistics.get(CurrentStage-1)), CalcSpeed(statistics.get(CurrentStage-2),statistics.get(CurrentStage-1)), CalcSpeed(statistics.get(0),statistics.get(CurrentStage-1)));
+        Formatter f = new Formatter();
+        f.format("%f %f %f%n", GetIntervalInS(statistics.get(0),statistics.get(CurrentStage-1)), CalcSpeed(statistics.get(CurrentStage-2),statistics.get(CurrentStage-1)), CalcSpeed(statistics.get(0),statistics.get(CurrentStage-1)));
+        try {OutFile.write(f.toString());}
+        catch (IOException ex){
+            ex.printStackTrace();
+        }
     }
     public void PrintFullStatistics(){
         System.out.format("Loading to complete in %f s. Speed: %f act/s. %n", GetIntervalInS(statistics.get(0),statistics.get(CurrentStage-1)), CalcSpeed(statistics.get(0),statistics.get(CurrentStage-1)));

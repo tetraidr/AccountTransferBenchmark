@@ -58,6 +58,7 @@ public class Benchmark {
         Statistics statisticsAcctTransfer = new Statistics(statisticsAddAccount.CheckSum, OutFile);
         testRunner.RunTest(acctTransferTaskGenerator,statisticsAcctTransfer,cfg,cfg.STATISTICINTERVAL_TRANSFERTEST_InS);
         System.out.format("Complete!");
+        System.out.format("Checksums: initial %d, after test: %d",addAccountTaskGenerator.checksum, client.Checksum());
         try {OutFile.flush();}
         catch (IOException ex){
             ex.printStackTrace();

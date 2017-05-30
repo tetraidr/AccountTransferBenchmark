@@ -11,7 +11,7 @@ public class BenchmarkThread implements Callable{
     public long ActsDone;
     public int CurThread;
     private int MaxThreads;
-    private TaskGenerator taskGenerator;
+    private volatile TaskGenerator taskGenerator;
     private ConcurrentHashMap<Integer,FutureTask> SubTasks = new ConcurrentHashMap<>();
     BenchmarkThread(int maxThreads, TaskGenerator taskGenerator){
         this.taskGenerator = taskGenerator;
