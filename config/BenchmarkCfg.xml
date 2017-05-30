@@ -11,11 +11,12 @@
 	<FlowNumber>10</FlowNumber>
 	<AsyncRequestsPerFlow>150</AsyncRequestsPerFlow>
 	<RandomSeed>100</RandomSeed>
+	<DropBaseAfterTest>Y</DropBaseAfterTest>
 	<AddAccountTest>
 		<AccountIdLength>8</AccountIdLength>
 		<AccountMaxStartCache>1000</AccountMaxStartCache>
-		<NumberOfAccounts>5000</NumberOfAccounts>
 		<StatisticIntervalSec>1</StatisticIntervalSec>
+		<NumberOfAccounts>5000</NumberOfAccounts>
 	</AddAccountTest>
 	<TransferTest>
 		<MaxCacheForTransfer>500</MaxCacheForTransfer>
