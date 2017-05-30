@@ -6,12 +6,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Benchmark {
     private static volatile ConcurrentHashMap<String,Integer> Accounts = new ConcurrentHashMap<>();
     private static Configuration cfg;
     public static void main(String[] args) throws InterruptedException {
         String PathToCfg = args[0];
+        String OutFileName = args[1];
+        FileWriter OutFile;
+        try {OutFile = new FileWriter(OutFileName);}
+        catch (IOException ex){
+            ex.printStackTrace();
+            return;
+        }
         Configurations configs = new Configurations();
         try
         {
@@ -40,15 +49,20 @@ public class Benchmark {
         }
         System.out.format("Prepare data for loading to %s (%d records)%n",cfg.ClientName,cfg.ACCOUNTSNUMBER);
         AddAccountTaskGenerator addAccountTaskGenerator = new AddAccountTaskGenerator(client, Accounts, cfg);
-        Statistics statisticsAddAccount = new Statistics(addAccountTaskGenerator.checksum);
+        Statistics statisticsAddAccount = new Statistics(addAccountTaskGenerator.checksum, OutFile);
         System.out.format("Complete! Sum of accounts: %d%n",statisticsAddAccount.CheckSum);
         System.out.println("Start loading accounts");
         testRunner.RunTest(addAccountTaskGenerator,statisticsAddAccount,cfg,cfg.STATISTICINTERVAL_ADDACCOUTTEST_InS);
         System.out.println("Start loading transfers");
         AcctTransferTaskGenerator acctTransferTaskGenerator = new AcctTransferTaskGenerator(client,Accounts,cfg);
-        Statistics statisticsAcctTransfer = new Statistics(statisticsAddAccount.CheckSum);
+        Statistics statisticsAcctTransfer = new Statistics(statisticsAddAccount.CheckSum, OutFile);
         testRunner.RunTest(acctTransferTaskGenerator,statisticsAcctTransfer,cfg,cfg.STATISTICINTERVAL_TRANSFERTEST_InS);
         System.out.format("Complete!");
+        try {OutFile.flush();}
+        catch (IOException ex){
+            ex.printStackTrace();
+            return;
+        }
         if (cfg.DROPBASEAFTERTEST.equals("Y")){
             client.drop();
         }
