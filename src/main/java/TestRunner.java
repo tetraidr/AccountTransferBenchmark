@@ -11,7 +11,7 @@ public class TestRunner {
     void RunTest(TaskGenerator taskGenerator,Statistics statistics, Configuration cfg, int StatisticInterval){
         statistics.AddStatisticsElement(System.nanoTime(),0);
         for (int i=0;i<cfg.FLOWNUMBER;i++){
-            BenchmarkThread benchmarkThread = new BenchmarkThread(cfg.ASYNCREQUESTPERFLOW,taskGenerator);
+            BenchmarkThread benchmarkThread = new BenchmarkThread(cfg.ASYNCREQUESTPERFLOW,taskGenerator,200);
             FutureTask task = new FutureTask(benchmarkThread);
             Futures.put(i,task);
             Threads.put(i,benchmarkThread);

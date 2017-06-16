@@ -11,7 +11,16 @@ public class AsyncQueryAddAccount implements Callable,BenchmarkTask{
         this.AccountId = AccountId;
         this.client = client;
     }
-    public Integer call(){
-        return client.AddAccount(AccountId,AccountCache);
+    public BenchmarkTaskResponse call(){
+        double Interval = System.nanoTime();
+        try {
+            int Result = client.AddAccount(AccountId,AccountCache);
+            Interval = System.nanoTime() - Interval;
+            return new BenchmarkTaskResponse(Interval,true,Result);
+        }
+        catch (Exception e){
+            Interval = System.nanoTime() - Interval;
+            return new BenchmarkTaskResponse(Interval,false,0);
+        }
     }
 }

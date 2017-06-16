@@ -10,8 +10,16 @@ class AsyncQueryAcctTransfer implements Callable,BenchmarkTask{
         this.acctTransfer = ListOfTransfers.getNext();
         this.client = client;
     }
-    public Integer call(){
-        acctTransfer.Result = client.AcctTransfer(acctTransfer);
-        return acctTransfer.Result;
+    public BenchmarkTaskResponse call(){
+        double Interval = System.nanoTime();
+        try {
+            int Result = client.AcctTransfer(acctTransfer);
+            Interval = System.nanoTime() - Interval;
+            return new BenchmarkTaskResponse(Interval,true,Result);
+        }
+        catch (Exception e){
+            Interval = System.nanoTime() - Interval;
+            return new BenchmarkTaskResponse(Interval,false,0);
+        }
     }
 }

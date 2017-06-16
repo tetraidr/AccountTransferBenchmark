@@ -1,8 +1,12 @@
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Formatter;
+import java.util.concurrent.LinkedBlockingQueue;
+
 /**
  * Created by sbt-khruzin-mm on 17.05.2017.
  */
@@ -11,11 +15,25 @@ public class Statistics{
     int CurrentStage;
     long CheckSum;
     FileWriter OutFile;
+    //
+    volatile LinkedBlockingQueue<Double> CallDuration;
+
+    double StartTime;
+    long FullAmount, CurrentAmount;
+    TreeSet<Double> Pеrcentile, Pеrcentile90, Pеrcentile95, Pеrcentile97, Pеrcentile99;
     Statistics(long CheckSum, FileWriter OutFile){
         statistics = new ConcurrentHashMap<>();
         CurrentStage = 0;
         this.CheckSum = CheckSum;
         this.OutFile = OutFile;
+        TreeSet<Double> list = new TreeSet<>();
+        this.CallDuration = new LinkedBlockingQueue<>();
+        StartCalcPercentile = false;
+    }
+    public void init(){
+        this.StartTime = System.nanoTime();
+        this.FullAmount = 0;
+        this.CurrentAmount = 0;
     }
     public void AddStatisticsElement(long TimeStamp,long Progress,long CheckSum){
         StatisticsElement NewElement = new StatisticsElement(TimeStamp,Progress,CheckSum);
@@ -80,5 +98,10 @@ public class Statistics{
         statistics.clear();
         CurrentStage = 0;
         CheckSum = 0;
+    }
+    public void AddStatisticsElement(BenchmarkTaskResponse response){
+        CallDuration.offer(response.Interval);
+        FullAmount++;
+        CurrentAmount++;
     }
 }
