@@ -28,7 +28,6 @@ public class Statistics{
         this.OutFile = OutFile;
         TreeSet<Double> list = new TreeSet<>();
         this.CallDuration = new LinkedBlockingQueue<>();
-        StartCalcPercentile = false;
     }
     public void init(){
         this.StartTime = System.nanoTime();

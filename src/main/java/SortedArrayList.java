@@ -6,6 +6,7 @@ import java.util.Collections;
  */
 class SortedArrayList<T> extends ArrayList<T> {
     public int PercentileRank;
+    public boolean NeedRebalance;
     @SuppressWarnings("unchecked")
     public void insertSorted(T value) {
         add(value);

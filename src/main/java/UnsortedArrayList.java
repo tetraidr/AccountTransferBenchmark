@@ -1,45 +1,36 @@
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by sbt-khruzin-mm on 15.06.2017.
  */
-public class UnsortedArrayList<T> implements List<T> {
-    HashMap<Integer,T> Array;
-
-    @NotNull
-    @Override
-    public Object[] toArray() {
-        return Array.values().toArray();
+public class UnsortedArrayList<V> extends HashMap<Long,V> {
+    private long NextIndex = 0;
+    public V put(V value){
+        return this.put(NextIndex++,value);
     }
-
-    @Override
-    public void clear() {
-        Array.clear();
+    public void putAll(List<V> list){
+        Iterator<V> entries = list.iterator();
+        V cur;
+        while (entries.hasNext()){
+            cur = entries.next();
+            this.put(cur);
+        }
     }
-
-    @Override
-    public T get(int i) {
-        return Array.get(i);
-    }
-
-    @Override
-    public boolean addAll(@NotNull Collection<? extends T> collection) {
-        return false;
-    }
-
-    @Override
-    public boolean addAll(int i, @NotNull Collection<? extends T> collection) {
-        return false;
-    }
-
-    @NotNull
-    @Override
-    public ListIterator<T> listIterator() {
-        return Array.entrySet().iterator();
+    public SortedArrayList<V> getMaxValues(int number){
+        SortedArrayList<V> MaxValues = new SortedArrayList<>();
+        Iterator<Entry<Long,V>> entries = this.entrySet().iterator();
+        V cur;
+        while (entries.hasNext()){
+            cur = entries.next().getValue();
+            Comparable<V> cmp = (Comparable<V>) cur;
+            if (cmp.compareTo(MaxValues.lower())>0){
+                MaxValues.remove(0);
+                MaxValues.add(cur);
+            }
+        }
+        return MaxValues;
     }
 }
