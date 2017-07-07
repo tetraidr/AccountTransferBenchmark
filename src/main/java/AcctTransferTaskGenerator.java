@@ -1,4 +1,3 @@
-import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -9,16 +8,18 @@ public class AcctTransferTaskGenerator implements TaskGenerator{
     private Transfers transfers;
     private long NumTransfers;
     private long CurTransfer;
-    AcctTransferTaskGenerator(CustomClient client, ConcurrentHashMap<String,Integer> Accounts, Configuration cfg){
+    private StatisticsThread statistics;
+    AcctTransferTaskGenerator(CustomClient client, ConcurrentHashMap<String,Integer> Accounts, Configuration cfg, StatisticsThread statistics){
         this.client = client;
         this.transfers = new Transfers(Accounts,cfg);
         this.NumTransfers = cfg.TRANSFERSNUMBER;
         this.CurTransfer = 0;
+        this.statistics = statistics;
     }
     public AsyncQueryAcctTransfer GetTask() {
         if (CurTransfer<NumTransfers) {
             CurTransfer++;
-            return new AsyncQueryAcctTransfer(client, transfers);
+            return new AsyncQueryAcctTransfer(client, transfers, statistics.CallDuration);
         }
         else {
             return null;
@@ -26,5 +27,8 @@ public class AcctTransferTaskGenerator implements TaskGenerator{
     }
     public boolean hasNext(){
         return CurTransfer<NumTransfers;
+    }
+    public StatisticsThread getStatistics(){
+        return statistics;
     }
 }

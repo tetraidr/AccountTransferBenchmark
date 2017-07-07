@@ -1,13 +1,13 @@
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.lang.Math;
 /**
  * Created by sbt-khruzin-mm on 14.06.2017.
  */
 public class CalcPercentileThread implements Callable{
-    volatile LinkedBlockingQueue<Double> CallDuration;
+    volatile ConcurrentLinkedQueue<Double> CallDuration;
     boolean StartCalcPercentile;
     int PercentileCalcMethod;
     final int NIARESTRANK = 1;
@@ -17,9 +17,10 @@ public class CalcPercentileThread implements Callable{
     private int SortedArrayRange;
     int INITSIZE=2000;
     long CurrentAmount;
+    public boolean TimeToStop;
     ArrayList<SortedArrayList<Double>> PercentileStatistic;
     ArrayList<UnsortedArrayList<Double>> PercentileStaticticCache;
-    public CalcPercentileThread(LinkedBlockingQueue<Double> CallDuration){
+    public CalcPercentileThread(ConcurrentLinkedQueue<Double> CallDuration){
         this.CallDuration = CallDuration;
         this.StartCalcPercentile = false;
         this.SortedArrayRange = INITSIZE/200-1;
@@ -27,32 +28,29 @@ public class CalcPercentileThread implements Callable{
             this.Percentiles[i] = PercentileRanks[i];
         }
         this.CurrentAmount = 0;
+        this.TimeToStop = false;
     }
     @Override
     public Integer call(){
         InitValues = new SortedArrayList<>();
         while(true){
             Double NewValue = null;
-            try {
-                NewValue = CallDuration.poll(10, TimeUnit.SECONDS);
-            }
-            catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
+            NewValue = CallDuration.poll();
             if (NewValue==null){
-                break;
+                if (TimeToStop){
+                    break;
+                }
             }
-            CurrentAmount++;
-            if (StartCalcPercentile){
-                InsertNewValue(NewValue);
-                CalcPercentile();
-            }
-            else
-            {
-                InitValues.insertSorted(NewValue);
-                if (InitValues.size()>=INITSIZE){
-                    StartCalc();
+            else {
+                CurrentAmount++;
+                if (StartCalcPercentile) {
+                    InsertNewValue(NewValue);
+                    CalcPercentile();
+                } else {
+                    InitValues.insertSorted(NewValue);
+                    if (InitValues.size() >= INITSIZE) {
+                        StartCalc();
+                    }
                 }
             }
         }

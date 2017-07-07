@@ -5,10 +5,10 @@ import java.lang.String;
 
 public class AcctTransfer {
 
-    public String AccountFrom = "";
-    public String AccountTo = "";
-    public int TransferAmount = 0;
-    public int Result = 0;
+    String AccountFrom = "";
+    String AccountTo = "";
+    int TransferAmount = 0;
+    //public int Result = 0;
 
     public AcctTransfer(String Acct1, String Acct2, int Amount) {
         this.AccountFrom = Acct1;

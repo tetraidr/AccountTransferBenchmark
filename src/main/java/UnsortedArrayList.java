@@ -8,10 +8,10 @@ import java.util.List;
  */
 public class UnsortedArrayList<V> extends HashMap<Long,V> {
     private long NextIndex = 0;
-    public V put(V value){
+    V put(V value){
         return this.put(NextIndex++,value);
     }
-    public void putAll(List<V> list){
+    void putAll(List<V> list){
         Iterator<V> entries = list.iterator();
         V cur;
         while (entries.hasNext()){
@@ -19,7 +19,7 @@ public class UnsortedArrayList<V> extends HashMap<Long,V> {
             this.put(cur);
         }
     }
-    public SortedArrayList<V> getMaxValues(int number){
+    SortedArrayList<V> getMaxValues(int number){
         SortedArrayList<V> MaxValues = new SortedArrayList<>();
         Iterator<Entry<Long,V>> entries = this.entrySet().iterator();
         V cur;

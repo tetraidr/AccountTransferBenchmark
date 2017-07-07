@@ -11,8 +11,8 @@ import java.io.IOException;
 
 public class Benchmark {
     private static volatile ConcurrentHashMap<String,Integer> Accounts = new ConcurrentHashMap<>();
-    private static Configuration cfg;
     public static void main(String[] args) throws InterruptedException {
+        Configuration cfg;
         String PathToCfg = args[0];
         String OutFileName = args[1];
         FileWriter OutFile;
@@ -44,18 +44,20 @@ public class Benchmark {
             case "Ignite":
                 client = new IgniteCustomClient(cfg.IgniteCfgPath);
                 break;
+            case "SelfTest":
+                client = new SelftTestCustomClient<String,Integer>();
+                break;
             default:
                 return;
         }
         System.out.format("Prepare data for loading to %s (%d records)%n",cfg.ClientName,cfg.ACCOUNTSNUMBER);
-        AddAccountTaskGenerator addAccountTaskGenerator = new AddAccountTaskGenerator(client, Accounts, cfg);
-        Statistics statisticsAddAccount = new Statistics(addAccountTaskGenerator.checksum, OutFile);
-        System.out.format("Complete! Sum of accounts: %d%n",statisticsAddAccount.CheckSum);
+        StatisticsThread statisticsAddAccount = new StatisticsThread(OutFile);
+        AddAccountTaskGenerator addAccountTaskGenerator = new AddAccountTaskGenerator(client, Accounts, cfg, statisticsAddAccount);
         System.out.println("Start loading accounts");
         testRunner.RunTest(addAccountTaskGenerator,statisticsAddAccount,cfg,cfg.STATISTICINTERVAL_ADDACCOUTTEST_InS);
         System.out.println("Start loading transfers");
-        AcctTransferTaskGenerator acctTransferTaskGenerator = new AcctTransferTaskGenerator(client,Accounts,cfg);
-        Statistics statisticsAcctTransfer = new Statistics(statisticsAddAccount.CheckSum, OutFile);
+        StatisticsThread statisticsAcctTransfer = new StatisticsThread(OutFile);
+        AcctTransferTaskGenerator acctTransferTaskGenerator = new AcctTransferTaskGenerator(client,Accounts,cfg, statisticsAddAccount);
         testRunner.RunTest(acctTransferTaskGenerator,statisticsAcctTransfer,cfg,cfg.STATISTICINTERVAL_TRANSFERTEST_InS);
         System.out.format("Complete!");
         System.out.format("Checksums: initial %d, after test: %d",addAccountTaskGenerator.checksum, client.Checksum());

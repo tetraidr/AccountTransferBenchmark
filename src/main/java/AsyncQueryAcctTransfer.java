@@ -1,25 +1,27 @@
-import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by sbt-khruzin-mm on 18.04.2017.
  */
-class AsyncQueryAcctTransfer implements Callable,BenchmarkTask{
+class AsyncQueryAcctTransfer extends Thread{
     private AcctTransfer acctTransfer;
     private CustomClient client;
-    AsyncQueryAcctTransfer(CustomClient client,Transfers ListOfTransfers){
+    private ConcurrentLinkedQueue<BenchmarkTaskResponse> response;
+    AsyncQueryAcctTransfer(CustomClient client,Transfers ListOfTransfers,ConcurrentLinkedQueue<BenchmarkTaskResponse> response){
         this.acctTransfer = ListOfTransfers.getNext();
         this.client = client;
+        this.response = response;
     }
-    public BenchmarkTaskResponse call(){
+    public void run(){
         double Interval = System.nanoTime();
         try {
             int Result = client.AcctTransfer(acctTransfer);
             Interval = System.nanoTime() - Interval;
-            return new BenchmarkTaskResponse(Interval,true,Result);
+            response.add(new BenchmarkTaskResponse(Interval,true,Result));
         }
         catch (Exception e){
             Interval = System.nanoTime() - Interval;
-            return new BenchmarkTaskResponse(Interval,false,0);
+            response.add(new BenchmarkTaskResponse(Interval,false,0));
         }
     }
 }

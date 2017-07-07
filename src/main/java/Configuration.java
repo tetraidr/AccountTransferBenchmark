@@ -5,24 +5,24 @@ import java.util.Random;
 /**
  * Created by sbt-khruzin-mm on 22.05.2017.
  */
-public class Configuration {
-    public int ACCOUNTNAMELENGTH = 8;
-    public int MAXACCOUNTCACHE = 1000;
-    public int MAXTRANSFER = 500;
-    public int ACCOUNTSNUMBER = 5000;
-    public int TRANSFERSNUMBER = 100000;
-    public int FLOWNUMBER = 10;
-    public int ASYNCREQUESTPERFLOW = 150;
-    public Random rnd;
-    public int STATISTICINTERVAL_ADDACCOUTTEST_InS = 1;
-    public int STATISTICINTERVAL_TRANSFERTEST_InS = 10;
-    public String ClientName;
-    public String TarantoolHostName;
-    public int TarantoolPort;
-    public String TarantoolUserName;
-    public String TarantoolPassword;
-    public String IgniteCfgPath;
-    public String DROPBASEAFTERTEST;
+class Configuration {
+    int ACCOUNTNAMELENGTH = 8;
+    int MAXACCOUNTCACHE = 1000;
+    int MAXTRANSFER = 500;
+    int ACCOUNTSNUMBER = 5000;
+    int TRANSFERSNUMBER = 100000;
+    int FLOWNUMBER = 10;
+    int ASYNCREQUESTPERFLOW = 150;
+    Random rnd;
+    int STATISTICINTERVAL_ADDACCOUTTEST_InS = 1;
+    int STATISTICINTERVAL_TRANSFERTEST_InS = 10;
+    String ClientName;
+    String TarantoolHostName;
+    int TarantoolPort;
+    String TarantoolUserName;
+    String TarantoolPassword;
+    String IgniteCfgPath;
+    String DROPBASEAFTERTEST;
     Configuration(XMLConfiguration config){
         ACCOUNTNAMELENGTH = config.getInt("AddAccountTest.AccountIdLength");
         MAXACCOUNTCACHE = config.getInt("AddAccountTest.AccountMaxStartCache");
@@ -50,6 +50,9 @@ public class Configuration {
             case "Ignite":
                 ClientName = "Ignite";
                 IgniteCfgPath = config.getString("Client.CfgPath");
+                break;
+            case "SelfTest":
+                ClientName = "SelfTest";
         }
         DROPBASEAFTERTEST = config.getString("DropBaseAfterTest");
     }
