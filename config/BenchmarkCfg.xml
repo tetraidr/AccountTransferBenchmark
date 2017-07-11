@@ -9,19 +9,26 @@
 		<CfgPath>D:\work\IdeaProjects\tarantoolbenchmark_i\config\ignitecl.xml</CfgPath>
 	</Client>-->
 	<Client type = "SelfTest"></Client>
-	<FlowNumber>10</FlowNumber>
-	<AsyncRequestsPerFlow>150</AsyncRequestsPerFlow>
-	<RandomSeed>100</RandomSeed>
 	<DropBaseAfterTest>Y</DropBaseAfterTest>
 	<AddAccountTest>
 		<AccountIdLength>8</AccountIdLength>
 		<AccountMaxStartCache>1000</AccountMaxStartCache>
 		<StatisticIntervalSec>1</StatisticIntervalSec>
 		<NumberOfAccounts>500000</NumberOfAccounts>
+		<FlowNumber>10</FlowNumber>
+		<GeneratorSpeed>200</GeneratorSpeed>
+		<GeneratorStepInterval>20</GeneratorStepInterval>
+		<GeneratorStepValue>100</GeneratorStepValue>
+		<RandomSeed>100</RandomSeed>
 	</AddAccountTest>
 	<TransferTest>
 		<MaxCacheForTransfer>500</MaxCacheForTransfer>
 		<NumberOfTransfers>100000</NumberOfTransfers>
 		<StatisticIntervalSec>10</StatisticIntervalSec>
+		<GeneratorSpeed>200</GeneratorSpeed>
+		<GeneratorStepInterval>20</GeneratorStepInterval>
+		<GeneratorStepValue>100</GeneratorStepValue>
+		<FlowNumber>10</FlowNumber>
+		<RandomSeed>100</RandomSeed>
 	</TransferTest>
 </Configuration>
