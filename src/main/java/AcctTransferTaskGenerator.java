@@ -9,7 +9,7 @@ public class AcctTransferTaskGenerator implements TaskGenerator{
     private long NumTransfers;
     private long CurTransfer;
     private StatisticsThread statistics;
-    AcctTransferTaskGenerator(CustomClient client, ConcurrentHashMap<String,Integer> Accounts, Configuration cfg, StatisticsThread statistics){
+    AcctTransferTaskGenerator(CustomClient client, ConcurrentHashMap<String,Integer> Accounts, AcctTransferConfiguration cfg, StatisticsThread statistics){
         this.client = client;
         this.transfers = new Transfers(Accounts,cfg);
         this.NumTransfers = cfg.TRANSFERSNUMBER;

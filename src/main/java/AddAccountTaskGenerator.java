@@ -17,7 +17,7 @@ public class AddAccountTaskGenerator implements TaskGenerator{
     long checksum;
     private Iterator<Map.Entry<String,Integer>> entries;
     private StatisticsThread statistics;
-    AddAccountTaskGenerator(CustomClient client, ConcurrentHashMap<String,Integer> Accounts, Configuration cfg, StatisticsThread statistics){
+    AddAccountTaskGenerator(CustomClient client, ConcurrentHashMap<String,Integer> Accounts, AddAccountConfiguration cfg, StatisticsThread statistics){
         this.client = client;
         this.Accounts = Accounts;
         this.AccountsNumber = cfg.ACCOUNTSNUMBER;

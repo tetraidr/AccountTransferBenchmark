@@ -50,15 +50,15 @@ public class Benchmark {
             default:
                 return;
         }
-        System.out.format("Prepare data for loading to %s (%d records)%n",cfg.ClientName,cfg.ACCOUNTSNUMBER);
+        System.out.format("Prepare data for loading to %s (%d records)%n",cfg.ClientName,cfg.addaccountcfg.ACCOUNTSNUMBER);
         StatisticsThread statisticsAddAccount = new StatisticsThread(OutFile);
-        AddAccountTaskGenerator addAccountTaskGenerator = new AddAccountTaskGenerator(client, Accounts, cfg, statisticsAddAccount);
+        AddAccountTaskGenerator addAccountTaskGenerator = new AddAccountTaskGenerator(client, Accounts, cfg.addaccountcfg, statisticsAddAccount);
         System.out.println("Start loading accounts");
-        testRunner.RunTest(addAccountTaskGenerator,statisticsAddAccount,cfg,cfg.STATISTICINTERVAL_ADDACCOUTTEST_InS);
+        testRunner.RunTest(addAccountTaskGenerator,statisticsAddAccount,cfg.addaccountcfg);
         System.out.println("Start loading transfers");
         StatisticsThread statisticsAcctTransfer = new StatisticsThread(OutFile);
-        AcctTransferTaskGenerator acctTransferTaskGenerator = new AcctTransferTaskGenerator(client,Accounts,cfg, statisticsAddAccount);
-        testRunner.RunTest(acctTransferTaskGenerator,statisticsAcctTransfer,cfg,cfg.STATISTICINTERVAL_TRANSFERTEST_InS);
+        AcctTransferTaskGenerator acctTransferTaskGenerator = new AcctTransferTaskGenerator(client,Accounts,cfg.accttransfercfg, statisticsAcctTransfer);
+        testRunner.RunTest(acctTransferTaskGenerator,statisticsAcctTransfer,cfg.accttransfercfg);
         System.out.format("Complete!");
         System.out.format("Checksums: initial %d, after test: %d",addAccountTaskGenerator.checksum, client.Checksum());
         try {OutFile.flush();}

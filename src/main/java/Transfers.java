@@ -8,7 +8,7 @@ class Transfers{
     private List<String> keys;
     private Random lrnd;
     private int MaxTransfer;
-    Transfers(ConcurrentHashMap<String,Integer> Accounts,Configuration cfg){
+    Transfers(ConcurrentHashMap<String,Integer> Accounts,AcctTransferConfiguration cfg){
         keys = new ArrayList<>(Accounts.keySet());
         lrnd = cfg.rnd;
         this.MaxTransfer = cfg.MAXTRANSFER;
