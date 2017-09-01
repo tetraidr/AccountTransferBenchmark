@@ -1,18 +1,19 @@
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
+import java.io.FileWriter;
+import java.util.concurrent.*;
 
 /**
  * Created by sbt-khruzin-mm on 19.05.2017.
  */
 class TestRunner {
     private static ConcurrentHashMap<Integer,Thread> Threads = new ConcurrentHashMap<>();
-    void RunTest(TaskGenerator taskGenerator,StatisticsThread statistics, TestConfiguration cfg){
+    void RunTest(String testName, TaskGenerator taskGenerator, TestConfiguration cfg, FileWriter OutFile){
+        System.out.format("Preparing %s test %n",testName);
+        StatisticsThread statistics = new StatisticsThread(OutFile);
+        taskGenerator.assignStatisticQueue(statistics.getStatisticsQueue());
         statistics.init();
         statistics.start();
         for (int i=0;i<cfg.getFlowNumber();i++){
-            BenchmarkThread benchmarkThread = new BenchmarkThread(taskGenerator,cfg.getGeneratorSpeed()/cfg.getFlowNumber());
+            BenchmarkThread benchmarkThread = new BenchmarkThread(taskGenerator,cfg.getGeneratorSpeed()/cfg.getFlowNumber(), statistics);
             Threads.put(i,benchmarkThread);
             benchmarkThread.start();
             try {
@@ -42,5 +43,6 @@ class TestRunner {
             }
         }
         statistics.TimeToStop = true;
+        System.out.format("Test %s complete %n", testName);
     }
 }

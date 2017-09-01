@@ -2,6 +2,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.*;
 import java.util.Formatter;
+import java.util.concurrent.atomic.LongAdder;
 
 /**
  * Created by sbt-khruzin-mm on 17.05.2017.
@@ -9,10 +10,11 @@ import java.util.Formatter;
 public class StatisticsThread extends Thread {
     private FileWriter OutFile;
     boolean TimeToStop;
-    ConcurrentLinkedQueue<BenchmarkTaskResponse> CallDuration;
+    private ConcurrentLinkedQueue<BenchmarkTaskResponse> CallDuration;
     private double StartTime, PreviousTime;
     private long CurrentAmount, FullAmount;
-    volatile long GAmount;
+    volatile LongAdder GAmount;
+    //volatile long GAmount;
     StatisticsThread(FileWriter OutFile){
         this.OutFile = OutFile;
         this.CallDuration = new ConcurrentLinkedQueue<>();
@@ -75,7 +77,7 @@ public class StatisticsThread extends Thread {
         this.PreviousTime = System.nanoTime();
         this.CurrentAmount = 0;
         this.FullAmount = 0;
-        this.GAmount = 0;
+        this.GAmount.reset();
     }
     /*public double GetIntervalInMs(double t1, double t2){
         return (t1 - t2) / 1e6;
@@ -90,11 +92,11 @@ public class StatisticsThread extends Thread {
         System.out.format("Last %f s. Queue: %d acts. Generator speed: %f act/s. Current speed: %f act/s. Average speed: %f act/s.%n",
                           GetIntervalInS(System.nanoTime(),StartTime),
                           CallDuration.size(),
-                          (double)GAmount/GetIntervalInS(System.nanoTime(),PreviousTime),
+                          (double)GAmount.longValue()/GetIntervalInS(System.nanoTime(),PreviousTime),
                           (double)CurrentAmount/GetIntervalInS(System.nanoTime(),PreviousTime),
                           (double)FullAmount/GetIntervalInS(System.nanoTime(),StartTime));
         CurrentAmount = 0;
-        GAmount = 0;
+        GAmount.reset();
         PreviousTime = System.nanoTime();
         /*Formatter f = new Formatter();
         f.format("%f %f %f%n", GetIntervalInS(statistics.get(0),statistics.get(CurrentStage-1)), CalcSpeed(statistics.get(CurrentStage-2),statistics.get(CurrentStage-1)), CalcSpeed(statistics.get(0),statistics.get(CurrentStage-1)));
@@ -115,4 +117,7 @@ public class StatisticsThread extends Thread {
     /*void clear(){
         FullAmount = 0;
     }*/
+    ConcurrentLinkedQueue<BenchmarkTaskResponse> getStatisticsQueue(){
+        return CallDuration;
+    }
 }

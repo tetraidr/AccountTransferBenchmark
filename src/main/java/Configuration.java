@@ -6,7 +6,6 @@ import java.util.Random;
  * Created by sbt-khruzin-mm on 22.05.2017.
  */
 class Configuration {
-    Random rnd;
     String ClientName;
     String TarantoolHostName;
     int TarantoolPort;
@@ -14,15 +13,10 @@ class Configuration {
     String TarantoolPassword;
     String IgniteCfgPath;
     String DROPBASEAFTERTEST;
+    String FILENAME;
     AddAccountConfiguration addaccountcfg;
     AcctTransferConfiguration accttransfercfg;
     Configuration(XMLConfiguration config){
-        if (config.getString("RandomSeed")==null){
-            rnd = new Random(System.nanoTime());
-        }
-        else{
-            rnd = new Random(config.getInt("RandomSeed"));
-        }
         switch (config.getString("Client[@type]")){
             case "Tarantool":
                 ClientName = "Tarantool";
@@ -37,6 +31,9 @@ class Configuration {
                 break;
             case "SelfTest":
                 ClientName = "SelfTest";
+        }
+        if (config.getString("CopyOutToFile[@copy]").equals("yes")){
+            FILENAME = config.getString("CopyOutToFile.FileName");
         }
         DROPBASEAFTERTEST = config.getString("DropBaseAfterTest");
         addaccountcfg = new AddAccountConfiguration(config);

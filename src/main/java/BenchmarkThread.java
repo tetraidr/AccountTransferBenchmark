@@ -5,10 +5,12 @@ public class BenchmarkThread extends Thread{
     private double Delta;
     private double nextAct;
     private volatile TaskGenerator taskGenerator;
-    BenchmarkThread(TaskGenerator taskGenerator, int tps){
+    private StatisticsThread statistics;
+    BenchmarkThread(TaskGenerator taskGenerator, int tps, StatisticsThread statistics){
         this.taskGenerator = taskGenerator;
         this.nextAct = 0;
         this.Delta = 1e9/tps;
+        this.statistics = statistics;
     }
     @Override
     public void run() {
@@ -31,6 +33,9 @@ public class BenchmarkThread extends Thread{
         Thread t = new Thread(taskGenerator.GetTask());
         t.start();
         nextAct += Delta;
-        taskGenerator.getStatistics().GAmount++;
+        statistics.GAmount.increment();
+    }
+    public void ChangeTps(int tps){
+        Delta += 1e9/tps;
     }
 }

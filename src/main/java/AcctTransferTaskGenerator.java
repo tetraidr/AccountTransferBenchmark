@@ -1,4 +1,5 @@
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by sbt-khruzin-mm on 18.05.2017.
@@ -8,18 +9,17 @@ public class AcctTransferTaskGenerator implements TaskGenerator{
     private Transfers transfers;
     private long NumTransfers;
     private long CurTransfer;
-    private StatisticsThread statistics;
-    AcctTransferTaskGenerator(CustomClient client, ConcurrentHashMap<String,Integer> Accounts, AcctTransferConfiguration cfg, StatisticsThread statistics){
+    private ConcurrentLinkedQueue<BenchmarkTaskResponse> statisticsQueue;
+    AcctTransferTaskGenerator(CustomClient client, ConcurrentHashMap<String,Integer> Accounts, AcctTransferConfiguration cfg){
         this.client = client;
         this.transfers = new Transfers(Accounts,cfg);
         this.NumTransfers = cfg.TRANSFERSNUMBER;
         this.CurTransfer = 0;
-        this.statistics = statistics;
     }
     public AsyncQueryAcctTransfer GetTask() {
         if (CurTransfer<NumTransfers) {
             CurTransfer++;
-            return new AsyncQueryAcctTransfer(client, transfers, statistics.CallDuration);
+            return new AsyncQueryAcctTransfer(client, transfers, statisticsQueue);
         }
         else {
             return null;
@@ -28,7 +28,7 @@ public class AcctTransferTaskGenerator implements TaskGenerator{
     public boolean hasNext(){
         return CurTransfer<NumTransfers;
     }
-    public StatisticsThread getStatistics(){
-        return statistics;
+    public void assignStatisticQueue(ConcurrentLinkedQueue<BenchmarkTaskResponse> statisticsQueue){
+        this.statisticsQueue = statisticsQueue;
     }
 }

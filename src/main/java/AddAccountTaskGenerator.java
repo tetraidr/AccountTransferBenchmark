@@ -2,6 +2,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by sbt-khruzin-mm on 18.05.2017.
@@ -16,8 +17,8 @@ public class AddAccountTaskGenerator implements TaskGenerator{
     private int charactersNum;
     long checksum;
     private Iterator<Map.Entry<String,Integer>> entries;
-    private StatisticsThread statistics;
-    AddAccountTaskGenerator(CustomClient client, ConcurrentHashMap<String,Integer> Accounts, AddAccountConfiguration cfg, StatisticsThread statistics){
+    private ConcurrentLinkedQueue<BenchmarkTaskResponse> statisticsQueue;
+    AddAccountTaskGenerator(CustomClient client, ConcurrentHashMap<String,Integer> Accounts, AddAccountConfiguration cfg){
         this.client = client;
         this.Accounts = Accounts;
         this.AccountsNumber = cfg.ACCOUNTSNUMBER;
@@ -26,12 +27,11 @@ public class AddAccountTaskGenerator implements TaskGenerator{
         this.charactersNum = characters.length();
         checksum = GenerateRndAccounts(cfg.rnd);
         entries = Accounts.entrySet().iterator();
-        this.statistics = statistics;
     }
     public AsyncQueryAddAccount GetTask(){
         if (entries.hasNext()) {
             Map.Entry<String,Integer> entry = entries.next();
-            return new AsyncQueryAddAccount(client, entry.getKey(), entry.getValue(), statistics.CallDuration);
+            return new AsyncQueryAddAccount(client, entry.getKey(), entry.getValue(), statisticsQueue);
         }
         else
         {
@@ -67,7 +67,7 @@ public class AddAccountTaskGenerator implements TaskGenerator{
         }
         return AcctId;
     }
-    public StatisticsThread getStatistics(){
-        return statistics;
+    public void assignStatisticQueue(ConcurrentLinkedQueue<BenchmarkTaskResponse> statisticsQueue){
+        this.statisticsQueue = statisticsQueue;
     }
 }
